@@ -1,0 +1,7 @@
+
+videos/
+audios/
+embeddings.joblib
+*.joblib
+*.webm
+*.mp3
