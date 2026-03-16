@@ -35,6 +35,6 @@ for json_file in jsons:
         my_dicts.append(chunk) 
 
 df = pd.DataFrame.from_records(my_dicts)
-# Save this dataframe
+# Save this dataframe via joblib
 joblib.dump(df, 'embeddings.joblib')
 
