@@ -16,3 +16,6 @@ Use the file preprocess_json to convert the json files to a dataframe with Embed
 Read the joblib file and load it into the memory. Then create a relevant prompt as per the user query and feed it to the LLM
 
 
+![RAG Pipeline](https://gist.githubusercontent.com/Priyasha2909/e69fe98eefd5a67179e5999f215cec00/raw/7fc474ee00c94a471fc581a257e29b3ddd836b3b/rag-pipeline.svg)
+
+
