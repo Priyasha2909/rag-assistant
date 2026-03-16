@@ -6,7 +6,6 @@ import requests
 
 
 def create_embedding(text_list):
-    # https://github.com/ollama/ollama/blob/main/docs/api.md#generate-embeddings
     r = requests.post("http://localhost:11434/api/embed", json={
         "model": "bge-m3",
         "input": text_list
@@ -15,6 +14,7 @@ def create_embedding(text_list):
     embedding = r.json()["embeddings"] 
     return embedding
 
+# Using llama as LLM and Ollama act as platform/ runtime tool for llama
 def inference(prompt):
     r = requests.post("http://localhost:11434/api/generate", json={
         # "model": "deepseek-r1",
@@ -27,24 +27,29 @@ def inference(prompt):
     print(response)
     return response
 
+# reading file we created in preprocess_json
 df = joblib.load('embeddings.joblib')
 
-
+# Creating embedding for user query and pulling chunks for user query
 incoming_query = input("Ask a Question: ")
 question_embedding = create_embedding([incoming_query])[0] 
 
 # Find similarities of question_embedding with other embeddings
 # print(np.vstack(df['embedding'].values))
 # print(np.vstack(df['embedding']).shape)
+
+# np.vstack - Converts into 2D array and compare both user query embeddings and audio text embedding to get chunk having highest similarities
 similarities = cosine_similarity(np.vstack(df['embedding']), [question_embedding]).flatten()
 # print(similarities)
+
+#Pulling top 5 matching chunks
 top_results = 5
 max_indx = similarities.argsort()[::-1][0:top_results]
 # print(max_indx)
 new_df = df.loc[max_indx] 
 # print(new_df[["title", "number", "text"]])
 
-prompt = f'''I am teaching web development in my Sigma web development course. Here are video subtitle chunks containing video title, video number, start time in seconds, end time in seconds, the text at that time:
+prompt = f'''Here are video subtitle chunks containing video title, video number, start time in seconds, end time in seconds, the text at that time:
 
 {new_df[["title", "number", "start", "end", "text"]].to_json(orient="records")}
 ---------------------------------
@@ -57,7 +62,10 @@ with open("prompt.txt", "w") as f:
 response = inference(prompt)["response"]
 print(response)
 
+# Writing response in file which we get from LLM
 with open("response.txt", "w") as f:
     f.write(response)
 # for index, item in new_df.iterrows():
 #     print(index, item["title"], item["number"], item["text"], item["start"], item["end"])
+
+
