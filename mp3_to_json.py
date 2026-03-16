@@ -4,13 +4,15 @@ import os
 
 model = whisper.load_model("large-v2")
 
+# Extracting audio files to create chunks from them
 audios = os.listdir("audios")
 
 for audio in audios: 
     if("_" in audio):
         number = audio.split("_")[0]
-        title = audio.split("_")[1][:-4]
+        title = audio.split("_")[1][:-4]  # excluding extension
         print(number, title)
+        # Converting speech to text
         result = model.transcribe(audio = f"audios/{audio}", 
         # result = model.transcribe(audio = f"audios/sample.mp3", 
                               language="hi",
